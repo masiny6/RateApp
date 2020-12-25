@@ -1,0 +1,27 @@
+.main-navigation {
+    text-align: center;
+    min-height: 5vw;
+    .navigation-list {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        display: block;
+        min-height: 5vw;
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        .navigation-elem {
+            display: inline-block;
+            align-self: center;
+            transition: all .2s ease-in;
+            .navigation-link {
+                text-decoration: none;
+                font-family: "Roboto", sans-serif;
+                font-size: 1vw;
+                color: #223046;
+                &:hover {
+                    color: black;
+                }
+            }
+        }
+    }
+}

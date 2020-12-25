@@ -1,0 +1,14 @@
+.btn {
+    font-family: "Roboto", sans-serif;
+    font-size: 1vw;
+    color: #223046;
+    border-radius: 5px;
+    transition: 0.3s;
+    border: 1px solid #BFC4CD;
+    &:hover {
+        color: white;
+        background-color: #223046;
+        transition: 0.3s;
+        cursor: pointer;
+    }
+}
