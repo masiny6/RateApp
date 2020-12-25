@@ -12,6 +12,9 @@ import GBP from "./images/GBP.png"
 import JPY from "./images/JPY.png"
 import RUB from "./images/RUB.png"
 import USD from "./images/USD.png"
+import { Dark } from "./components/dark/Dark"
+import { Modal } from "./components/modal/Modal"
+import { Input } from "./components/input/Input"
 
 
 
@@ -20,6 +23,35 @@ export default class App extends React.Component { //Функциональны�
     constructor(props) {
         super(props);
         this.state = {
+            formControls: {
+                email: {
+                    value: "",
+                    type: "email",
+                    label: "Email",
+                    errorMessage: "Введите корректный Email",
+                    valid: false,
+                    touched: false,
+                    validation: {
+                        required: true,
+                        email: true
+                    }
+                },
+                password: {
+                    value: "",
+                    type: "password",
+                    label: "Пароль",
+                    errorMessage: "Введите корректный пароль",
+                    valid: false,
+                    touched: false,
+                    validation: {
+                        required: true,
+                        minLenght: 6
+                    }
+                }
+            },
+
+
+
             base: "USD",
             rate: "",
             date: "",
@@ -40,6 +72,30 @@ export default class App extends React.Component { //Функциональны�
             sample: {base: "USD", base2: "RUB", date: "", course: ""},
             sampleList: ""
         }
+    }
+
+    onChangeHandler = (event, controlName) => {
+        console.log(`${controlName} - ${event.target.value}`)
+    }
+
+
+
+    renderInputs = () => {
+        return Object.keys(this.state.formControls).map((controlName, i)=> {
+            const control = this.state.formControls[controlName]
+            return(
+                <Input 
+                    key = {controlName + i}
+                    type = {control.type}
+                    value = {control.value}
+                    valid = {control.touched}
+                    label = {control.label}
+                    errorMessage = {control}
+                    shouldValidate = {true}
+                    onChange = {(event)=> this.onChangeHandler(event, controlName)}
+                />
+            )
+        })
     }
     
     baseHandler = (event) => {
@@ -80,6 +136,21 @@ export default class App extends React.Component { //Функциональны�
             })
         })//Считывает информацию из базы данных и помещает в state
     }
+
+    sampleRemove = async (id) => {
+        let sampleList = {...this.state.sampleList}
+        delete sampleList[id]
+        this.setState({
+            sampleList
+        })
+        await axios.delete(`https://rateapp-c75d2-default-rtdb.firebaseio.com/sample/${id}.json`)
+    }
+
+
+
+
+
+
 
     inputValueHandler = (event) => {
         this.setState({
@@ -124,6 +195,12 @@ export default class App extends React.Component { //Функциональны�
                 currency
             })
         })
+        axios("https://rateapp-c75d2-default-rtdb.firebaseio.com/sample.json")
+        .then((response)=>{
+            this.setState({
+                sampleList: response.data
+            })
+        })
     }
 
 
@@ -140,8 +217,12 @@ export default class App extends React.Component { //Функциональны�
                             baseHandler: this.baseHandler,
                             base2Handler: this.base2Handler,
                             sampleDateHandler: this.sampleDateHandler,
-                            dataWrite: this.dataWrite
+                            dataWrite: this.dataWrite,
+                            sampleRemove: this.sampleRemove,
+                            renderInputs: this.renderInputs
                     }}>
+                    <Dark/>
+                    <Modal/>
                     <Layout/>
                 </RateContext.Provider>
             </Fragment>

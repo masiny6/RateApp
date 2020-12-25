@@ -6,7 +6,7 @@ import "./sample.scss"
 
 export const Sample = () => {
 
-    const {state, baseHandler, base2Handler, sampleDateHandler, dataWrite} = useContext(RateContext)
+    const {state, baseHandler, base2Handler, sampleDateHandler, dataWrite, sampleRemove} = useContext(RateContext)
     return(
         <div className="sample">
             <div className="sample__container">
@@ -52,7 +52,7 @@ export const Sample = () => {
                                         <span><img className="sample__img" src={state.currency[state.sampleList[item].base].flag} alt={item}/>&nbsp;{state.sampleList[item].base}</span>
                                         <span>{state.sampleList[item].date}</span>
                                         <span>{`${state.sampleList[item].course} ${state.sampleList[item].base2}`}</span>
-                                        <button className="sample__btn"><i className="fa fa-times"/></button>
+                                        <button className="sample__btn" onClick={()=> sampleRemove(item)}><i className="fa fa-times"/></button>
                                     </li>
                                 )
                             })
