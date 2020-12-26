@@ -3,7 +3,7 @@ import './input.scss';
 
 
 
-function isInvalid(valid, touched, shouldValidate) {
+function isInvalid({valid, touched, shouldValidate}) {
     return !valid && touched && shouldValidate
 }
 
@@ -16,8 +16,8 @@ export const Input = (props) => {
         <div className={cls.join(" ")}>
             <label htmlFor={htmlFor}>{props.label}</label>
             <input type={inputType} id={htmlFor} value={props.value} onChange={props.onChange}/>
-            {isInvalid(props) ? <span>{props.errorMessage || "Введите верное значение"}</span> : null}
-            
+            {isInvalid(props) ? <span style = {{color:"#f01f30"}}>{props.errorMessage || "Введите верное значение"}</span> : null}
+           
         </div>
     )
 }

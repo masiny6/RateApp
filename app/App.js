@@ -16,6 +16,11 @@ import { Dark } from "./components/dark/Dark"
 import { Modal } from "./components/modal/Modal"
 import { Input } from "./components/input/Input"
 
+function validateEmail(email) {
+    const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    return re.test(String(email).toLowerCase());
+}
+
 
 
 export default class App extends React.Component { //Функциональный компонент
@@ -23,6 +28,8 @@ export default class App extends React.Component { //Функциональны�
     constructor(props) {
         super(props);
         this.state = {
+            auth: false,
+            error: "",
             formControls: {
                 email: {
                     value: "",
@@ -45,7 +52,7 @@ export default class App extends React.Component { //Функциональны�
                     touched: false,
                     validation: {
                         required: true,
-                        minLenght: 6
+                        minLength: 6
                     }
                 }
             },
@@ -70,12 +77,124 @@ export default class App extends React.Component { //Функциональны�
 
             //sample
             sample: {base: "USD", base2: "RUB", date: "", course: ""},
-            sampleList: ""
+            sampleList: "",
+
+            showModal: false,
+            isFormValid: false
+        }
+    }
+    
+
+
+    loginHandler = async () => {
+        
+        const authData = {
+            email: this.state.formControls.email.value,
+            password: this.state.formControls.password.value,
+            returnSecureToken: true
+        }
+
+        try {
+            const response = await axios.post("https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyBcnGluf6RGpmPI6ouicQcLtrTtXeAreEo", authData)
+            if(response.data.idToken) {
+                const formControls = {...this.state.formControls}
+                formControls.email.value = ""
+                formControls.password.value = ""
+                
+                this.setState({
+                    auth:true,
+                    showModal: false,
+                    error: "",
+                    formControls
+                })
+            } 
+        } catch(e){
+            console.log(e)
+            this.setState({
+                error: "Неверный логин или пароль"
+            })
         }
     }
 
+    registerHandler = async () => {
+        const authData = {
+            email: this.state.formControls.email.value,
+            password: this.state.formControls.password.value,
+            returnSecureToken: true
+        }
+
+        try {
+            const response = await axios.post("https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyBcnGluf6RGpmPI6ouicQcLtrTtXeAreEo", authData)
+            if(response.data.idToken) {
+
+                const formControls = {...this.state.formControls}
+                formControls.email.value = ""
+                formControls.password.value = ""
+
+                this.setState({
+                    auth:true,
+                    showModal: false,
+                    error: "",
+                    formControls
+                })
+            } 
+        } catch(e){
+            console.log(e)
+            this.setState({
+                error: "Неверный логин или пароль"
+            })
+        }
+    }
+
+    modalShowHandler = () => {
+        this.setState({
+            showModal: true
+        })
+    }
+
+    modalHideHandler = () => {
+        this.setState({
+            showModal: false
+        })
+    }
+
+
+    validateControl(value, validation) {
+        if(!validation) {
+            return true
+        } 
+            let isValid = true
+            if(validation.required) {
+                isValid = value.trim() !== "" && isValid
+            }
+            if(validation.email) {
+                isValid = validateEmail(value) && isValid
+            }
+            if(validation.minLength) {
+                isValid = value.length >= validation.minLength && isValid
+            }
+
+            return isValid
+        
+
+    }
+
     onChangeHandler = (event, controlName) => {
-        console.log(`${controlName} - ${event.target.value}`)
+        const formControls = {...this.state.formControls}//Работаем с копией state
+        const control = {...formControls[controlName]}
+        control.value = event.target.value
+        control.touched = true
+        control.valid = this.validateControl(control.value, control.validation)
+        formControls[controlName] = control
+
+        let isFormValid = true
+        Object.keys(formControls).forEach(name=>{
+            isFormValid=formControls[name].valid && isFormValid
+        })
+        this.setState({
+            formControls,
+            isFormValid
+        })
     }
 
 
@@ -88,9 +207,10 @@ export default class App extends React.Component { //Функциональны�
                     key = {controlName + i}
                     type = {control.type}
                     value = {control.value}
-                    valid = {control.touched}
+                    valid = {control.valid}
+                    touched = {control.touched}
                     label = {control.label}
-                    errorMessage = {control}
+                    errorMessage = {control.errorMessage}
                     shouldValidate = {true}
                     onChange = {(event)=> this.onChangeHandler(event, controlName)}
                 />
@@ -178,7 +298,7 @@ export default class App extends React.Component { //Функциональны�
         
     }
 
-    componentDidMount() {
+    componentDidMount(){
         fetch(`https://api.exchangeratesapi.io/latest?base=${this.state.base}`)
         .then((response)=> response.json()).then((responce)=>{
             //console.log(responce)
@@ -219,9 +339,13 @@ export default class App extends React.Component { //Функциональны�
                             sampleDateHandler: this.sampleDateHandler,
                             dataWrite: this.dataWrite,
                             sampleRemove: this.sampleRemove,
-                            renderInputs: this.renderInputs
+                            renderInputs: this.renderInputs,
+                            modalShowHandler: this.modalShowHandler,
+                            modalHideHandler: this.modalHideHandler,
+                            loginHandler: this.loginHandler,
+                            registerHandler: this.registerHandler
                     }}>
-                    <Dark/>
+                    <Dark showModal={this.state.showModal} modalHideHandler={this.modalHideHandler}/>
                     <Modal/>
                     <Layout/>
                 </RateContext.Provider>

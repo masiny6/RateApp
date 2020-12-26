@@ -3,7 +3,7 @@ import './button.scss';
 
 export const Button = (props) => {
     return(
-        <button className="btn" onClick={()=> props.click ? props.click(props.arg || '') : undefined}>
+        <button disabled={props.disabled} className="btn" onClick={()=> props.click ? props.click(props.arg || '') : undefined}>
             {props.text}
         </button>
     )

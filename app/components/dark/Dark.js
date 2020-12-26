@@ -2,9 +2,16 @@ import React from 'react';
 import './dark.scss';
 
 
-export const Dark = () => {
+export const Dark = (props) => {
+
+    const cls = ["dark"]
+
+    if(props.showModal) {
+        cls.push('show-dark')
+    }
+
     return(
-        <div className="dark"></div>
+        <div className={cls.join(" ")} onClick={props.modalHideHandler}></div>
     )
     
 }

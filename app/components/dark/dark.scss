@@ -7,4 +7,9 @@
     background-color: #1e1e1e;
     opacity: .6;
     z-index: 7;
+    display: none;
+}
+
+.show-dark {
+    display: block;
 }

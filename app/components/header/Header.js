@@ -1,8 +1,11 @@
-import React from "react"
+import React, {useContext} from "react"
+import { RateContext } from "../../context/RateContext"
 import Navbar from "../navbar/Navbar"
 import "./header.scss"
 
 export const Header = () => {
+
+    const {modalShowHandler} = useContext(RateContext)
 
     return(
         <div className="header">
@@ -12,7 +15,7 @@ export const Header = () => {
                 </div>
                 <Navbar/>
                 <div className= "person">
-                    <i className="fa fa-user" aria-hidden="true"/>
+                    <i className="fa fa-user" aria-hidden="true" onClick={modalShowHandler}/>
                 </div>
                 
             </div>
