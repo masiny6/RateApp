@@ -5,8 +5,9 @@ import App from "./App.js"
 import "./scss/index.scss"
 
 
-const app = <BrowserRouter>
-<App/>
+const app = 
+<BrowserRouter>
+    <App/>  
 </BrowserRouter>
 
 ReactDom.render(

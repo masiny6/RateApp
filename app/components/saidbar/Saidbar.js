@@ -4,7 +4,7 @@ import "./saidbar.scss"
 
 export const Sidebar = () => {
 
-    const {state} = useContext(RateContext)//Импортировали наш контекст и зарали стайт
+    const {state} = useContext(RateContext)//Импортировали наш контекст и забрали стейт
 
 
     return(

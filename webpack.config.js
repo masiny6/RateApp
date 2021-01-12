@@ -6,7 +6,6 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const {
     CleanWebpackPlugin
 } = require('clean-webpack-plugin');
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 
 module.exports = {
     mode: "development",
@@ -15,9 +14,7 @@ module.exports = {
         index: ["@babel/polyfill", "./app/index.js"],
         // catalog: ["@babel/polyfill", "./app/catalog.js"],
     }, //Какой модуль собирать
-    optimization: {
-        minimizer: [new UglifyJsPlugin()],
-    },
+
 
     output: {
         path: path.resolve(__dirname, "dist"),

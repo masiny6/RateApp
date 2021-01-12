@@ -80,7 +80,10 @@ export default class App extends React.Component { //Функциональны�
             sampleList: "",
 
             showModal: false,
-            isFormValid: false
+            isFormValid: false,
+
+            //header
+            welcome: ""
         }
     }
     
@@ -98,6 +101,10 @@ export default class App extends React.Component { //Функциональны�
             const response = await axios.post("https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyBcnGluf6RGpmPI6ouicQcLtrTtXeAreEo", authData)
             if(response.data.idToken) {
                 const formControls = {...this.state.formControls}
+                
+                this.setState({//Приветствие
+                    welcome: this.state.formControls.email.value,
+                })
                 formControls.email.value = ""
                 formControls.password.value = ""
                 
@@ -308,7 +315,7 @@ export default class App extends React.Component { //Функциональны�
             for(let i = 0; i < rateArr.length; i++) {
                 currency[rateArr[i]].course = responce.rates[rateArr[i]]
             }
-
+            console.log(responce)
             this.setState({
                 rate: responce.rates,
                 date: responce.date,
